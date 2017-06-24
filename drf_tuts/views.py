@@ -35,8 +35,7 @@ class ChartData(APIView):
         labels = ["Users", "Blue", "Yellow", "Green", "Purple", "Orange"]
         default_items = [qs_count, 23, 2, 3, 12, 2]
         data = {
-                "labels": labels,
-                "default": default_items,
+            "labels": labels,
+            "values": default_items,
         }
         return Response(data)
-

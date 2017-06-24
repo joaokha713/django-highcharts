@@ -76,14 +76,14 @@ WSGI_APPLICATION = 'drf_tuts.wsgi.application'
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'drf_project1',
-        'USER': 'postgres',
-        'PASSWORD': 'godlike',
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
-    }
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    #     'NAME': 'drf_project1',
+    #     'USER': 'postgres',
+    #     'PASSWORD': 'godlike',
+    #     'HOST': '127.0.0.1',
+    #     'PORT': '5432',
+    # }
 }
 
 
@@ -121,6 +121,13 @@ USE_TZ = True
 
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.10/howto/static-files/
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'public'),
+)
 
-STATIC_URL = '/static/'
+STATIC_URL = '/public/'
+
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder'
+)
