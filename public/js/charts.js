@@ -1,10 +1,12 @@
 (function ($, palette) {
-    function setChart2(labels, data) {
+    function setChart2(labels, data, colors) {
         var canvas = document.getElementById("myChart");
         var ctx = canvas.getContext("2d");
         var lastend = 0;
         var myTotal = 0;
-        var myPalette = palette.listSchemes('tol-rainbow')[0](10);
+        // if colors is undefined, use palette
+        var isUsingPalette = !colors;
+        var myPalette = colors || palette.listSchemes('tol-rainbow')[0](10);
 
         for (var e = 0; e < data.length; e++) {
             myTotal += data[e];
@@ -19,7 +21,7 @@
         var outerRadius = radius + 50;
 
         for (var i = 0; i < data.length; i++) {
-            ctx.fillStyle = '#' + myPalette[i];
+            ctx.fillStyle = (isUsingPalette ? '#' : '') + myPalette[i];
             ctx.beginPath();
             ctx.moveTo(centerX, centerY);
             ctx.arc(centerX, centerY, radius, lastend, lastend + (Math.PI * 2 * (data[i] / myTotal)), false);
@@ -36,7 +38,7 @@
             var x = centerX + sin * outerRadius;
             var y = centerY + cos * outerRadius;
 
-            ctx.fillStyle = '#' + myPalette[i];
+            ctx.fillStyle = (isUsingPalette ? '#' : '') + myPalette[i];
             ctx.textAlign = 'center';
             ctx.fillText(labels[i], x, y);
             lastend += Math.PI * 2 * (data[i] / myTotal);
@@ -55,7 +57,7 @@
         method: "GET",
         url: endpoint,
         success: function (data) {
-            setChart2(data.labels, data.values);
+            setChart2(data.labels, data.values, data.colors);
         },
         error: function (error_data) {
             console.log("error");

@@ -32,9 +32,11 @@ class ChartData(APIView):
     def get(self, request, format=None):
         # qs_count = User.objects.all().count()
         qs_count = 4
+        colors = ["#FF0000", "#0000FF", "#FFFF00", "#00FF00", "purple", "orange"]
         labels = ["Users", "Blue", "Yellow", "Green", "Purple", "Orange"]
         default_items = [qs_count, 23, 2, 3, 12, 2]
         data = {
+            "colors": colors,
             "labels": labels,
             "values": default_items,
         }
