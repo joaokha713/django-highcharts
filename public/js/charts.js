@@ -1,67 +1,39 @@
-(function ($, Highcharts) {
-    var chartConfig = {
-        chart: {
-            plotBackgroundColor: null,
-            plotBorderWidth: null,
-            plotShadow: false,
-            type: 'pie'
-        },
-        title: {
-            text: 'Test Chart'
-        },
-        tooltip: {
-            pointFormat: '{series.name}: <b>{point.y}</b>'
-        },
-        plotOptions: {
-            pie: {
-                allowPointSelect: true,
-                cursor: 'pointer',
-                dataLabels: {
-                    enabled: true,
-                    format: '<b>{point.name}</b>: {point.y}',
-                    style: {
-                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
-                    }
-                }
-            }
-        },
-        series: [{
-            name: 'Colors',
-            colorByPoint: true,
-            data: []
-        }]
-    };
+(function ($, palette) {
+    function setChart2(data) {
+        var canvas = document.getElementById("myChart");
+        var ctx = canvas.getContext("2d");
+        var lastend = 0;
+        var myTotal = 0;
+        var myPalette = palette.listSchemes('tol-rainbow')[0](10);
 
-    $(function(){
-        $.ajax({
-            method: "GET",
-            url: '/api/chart/data?format=json',
-            success: function(resp) {
-                // expect labels and values in resp
-                if (!resp || !resp.labels || !resp.values) {
-                    console.error('AJAX response does not have correct values');
-                    return;
-                }
-                var data = resp.labels.map(function(label, index) {
-                    return {
-                        name: label,
-                        y: resp.values[index]
-                    };
-                });
-                drawChart(data);
-            },
-            error: function(err) {
-                console.log(err);
-            }
-        });
-    });
+        for (var e = 0; e < data.length; e++) {
+            myTotal += data[e];
+        }
 
-    // ============
-    function drawChart(data) {
-        var newConfig = JSON.parse(JSON.stringify(chartConfig));
-        newConfig.series[0].data = data;
-        Highcharts.chart('chartContainer', newConfig);
+        for (var i = 0; i < data.length; i++) {
+            ctx.fillStyle = '#' + myPalette[i];
+            ctx.beginPath();
+            ctx.moveTo(canvas.width / 2, canvas.height / 2);
+            ctx.arc(canvas.width / 2, canvas.height / 2, canvas.height / 2, lastend, lastend + (Math.PI * 2 * (data[i] / myTotal)), false);
+            ctx.lineTo(canvas.width / 2, canvas.height / 2);
+            ctx.fill();
+            lastend += Math.PI * 2 * (data[i] / myTotal);
+        }
     }
 
-
-})(jQuery, Highcharts);
+    var endpoint = '/api/chart/data/';
+    var defaultData = [];
+    var labels = [];
+    $.ajax({
+        method: "GET",
+        url: endpoint,
+        success: function (data) {
+            labels = data.labels;
+            setChart2(data.values);
+        },
+        error: function (error_data) {
+            console.log("error");
+            console.log(error_data);
+        }
+    })
+})(jQuery, palette);
